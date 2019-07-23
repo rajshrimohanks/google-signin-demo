@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Just a test</title>
+</head>
+
+<body>
+  Hello!
+
+  <br>
+  <br>
+
+  <button id="signinButton">Sign in with Google</button>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+  <script>
+    // Set up the sign in button
+    $('#signinButton').click(function () {
+      $.ajax({
+        type: 'GET',
+        url: '<%= serverUrl %>/auth',
+        contentType: 'application/json',
+        success: function (result) {
+          window.location.href = result.url;  // Redirect to auth URL
+        },
+        processData: false
+      });
+    });
+
+    // Set up the process to exchange auth code for access token
+    $(document).ready(function () {
+      const urlVars = getUrlVars(location.search);
+      if (urlVars.code) {
+        $.ajax({
+          type: 'POST',
+          url: '<%= serverUrl %>/store',
+          contentType: 'application/json',
+          success: function (result) {
+            console.log('Response from server: ', result);
+          },
+          processData: false,
+          data: JSON.stringify({
+            code: urlVars.code
+          })
+        });
+      }
+    });
+
+    function getUrlVars(url) {
+      if (!url) {
+        return {};
+      }
+      let vars = {};
+      url = url.substring(1, url.length);
+      const split = url.split('&');
+      split.forEach(item => {
+        item = item.split('=');
+        vars[item[0]] = item[1];
+      });
+      return vars;
+    }
+  </script>
+</body>
+
+</html>
