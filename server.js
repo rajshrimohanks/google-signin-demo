@@ -34,6 +34,13 @@ app.get('/', (req, res, next) => {
   });
 });
 
+app.get('/client', (req, res, next) => {
+  res.render('client-code-only', {
+    serverUrl: `${process.env.BASE_URL}:${port}`,
+    googleSignInClientId: process.env.GOOGLE_CLIENT_ID
+  });
+});
+
 // Endpoint to get the auth URL.
 app.get('/auth', (req, res, next) => {
   const url = oauth2Client.generateAuthUrl({
